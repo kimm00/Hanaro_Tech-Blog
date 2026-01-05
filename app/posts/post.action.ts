@@ -8,27 +8,26 @@ import { redirect } from 'next/navigation';
 // ✅ CREATE
 export async function createPost(_prev: any, formData: FormData) {
   const session = await auth();
-  if (!session?.user) return { error: '로그인이 필요합니다' };
+  if (!session?.user) return { error: '로그인 필요' };
 
   const title = formData.get('title')?.toString();
   const contents = formData.get('contents')?.toString();
-  const category = formData.get('category')?.toString();
+  const categoryTitle = formData.get('category')?.toString() ?? '기타';
 
-  if (!title) return { error: '제목을 입력하세요' };
+  if (!title) return { error: '제목 필요' };
 
-  const post = await prisma.post.create({
+  const cat = await prisma.category.upsert({
+    where: { title: categoryTitle },
+    update: {},
+    create: { title: categoryTitle },
+  });
+
+  await prisma.post.create({
     data: {
       title,
       contents,
-      Category: {
-        connectOrCreate: {
-          where: { title: category ?? '기타' },
-          create: { title: category ?? '기타' },
-        },
-      },
-      User: {
-        connect: { id: Number(session.user.id) },
-      },
+      category: cat.id,
+      writer: Number(session.user.id),
     },
   });
 

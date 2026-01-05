@@ -1,38 +1,42 @@
 'use client';
 
 import Link from 'next/link';
+import { CATEGORIES } from '@/lib/categories';
 
 type Props = {
   current: string;
 };
 
-const categories = [
-  { name: '전체보기' },
-  { name: 'React' },
-  { name: '렌더링' },
-  { name: 'js' },
-];
-
 export default function CategoryList({ current }: Props) {
   return (
     <aside className="border-r pr-4">
       <ul className="space-y-2">
-        {categories.map((c) => {
-          const isActive = current === c.name;
-          const href =
-            c.name === '전체보기'
-              ? '/'
-              : `/?category=${encodeURIComponent(c.name)}`;
+        <li>
+          <Link
+            href="/"
+            className={
+              current === '전체보기'
+                ? 'font-bold text-primary'
+                : 'hover:underline'
+            }
+          >
+            전체보기
+          </Link>
+        </li>
+
+        {CATEGORIES.map((name) => {
+          const isActive = current === name;
+          const href = `/?category=${encodeURIComponent(name)}`;
 
           return (
-            <li key={c.name}>
+            <li key={name}>
               <Link
                 href={href}
-                className={`flex justify-between ${
+                className={
                   isActive ? 'font-bold text-primary' : 'hover:underline'
-                }`}
+                }
               >
-                <span>{c.name}</span>
+                {name}
               </Link>
             </li>
           );

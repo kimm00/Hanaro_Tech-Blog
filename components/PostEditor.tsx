@@ -4,6 +4,7 @@ import { useActionState } from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPost, updatePost, deletePost } from '@/app/posts/post.action';
+import { CATEGORIES } from '@/lib/categories';
 
 type Props = {
   mode: 'create' | 'edit';
@@ -48,7 +49,8 @@ export default function PostEditor({ mode, post }: Props) {
       {open && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40">
           <div className="rounded bg-white p-6">
-            <p className="mb-4 text-lg font-bold">✏️ 편집 성공!</p>
+            <p className="mb-4 font-bold text-lg">✏️ 편집 성공!</p>
+            {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
             <button
               onClick={() => router.push('/')}
               className="rounded bg-green-500 px-4 py-2 text-white"
@@ -60,9 +62,34 @@ export default function PostEditor({ mode, post }: Props) {
       )}
 
       <form action={formAction} className="max-w-3xl p-8">
-        <input name="title" defaultValue={post?.title ?? ''} />
-        <input name="category" defaultValue={post?.category ?? ''} />
-        <textarea name="contents" defaultValue={post?.contents ?? ''} />
+        <input
+          name="title"
+          placeholder="제목"
+          defaultValue={post?.title ?? ''}
+          className="mb-3 w-full rounded border border-gray-300 px-3 py-2 text-black"
+        />
+
+        <select
+          name="category"
+          defaultValue={post?.category ?? ''}
+          className="mb-4 w-64 rounded border border-gray-300 bg-white px-3 py-2 text-black"
+        >
+          <option value="" disabled>
+            카테고리 선택
+          </option>
+          {CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
+        <textarea
+          name="contents"
+          placeholder="내용"
+          defaultValue={post?.contents ?? ''}
+          className="min-h-[300px] w-full rounded border border-gray-300 px-3 py-2 text-black"
+        />
 
         <div className="mt-6 flex gap-4">
           <button
@@ -82,20 +109,20 @@ export default function PostEditor({ mode, post }: Props) {
             </button>
           )}
         </div>
-
-        {state?.error && <p>{state.error}</p>}
       </form>
+
       {deleteOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40">
-          <div className="rounded bg-white p-6 w-80">
-            <p className="mb-4 text-lg font-bold">🗑️ 게시글 삭제</p>
-            <p className="mb-6 text-sm text-gray-600">
+          <div className="w-80 rounded bg-white p-6">
+            <p className="mb-4 font-bold text-lg">🗑️ 게시글 삭제</p>
+            <p className="mb-6 text-gray-600 text-sm">
               이 게시글은 삭제하면 복구할 수 없습니다.
               <br />
               정말 삭제하시겠습니까?
             </p>
 
             <div className="flex justify-end gap-3">
+              {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
               <button
                 onClick={() => setDeleteOpen(false)}
                 className="rounded border px-4 py-2"
@@ -103,6 +130,7 @@ export default function PostEditor({ mode, post }: Props) {
                 취소
               </button>
 
+              {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
               <button
                 onClick={handleDelete}
                 disabled={deleting}
