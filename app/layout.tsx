@@ -1,5 +1,10 @@
-import './globals.css';
+// app/layout.tsx (Server Component 유지)
+import './globals.css'; // ✅ Tailwind 필수
+
+import Providers from './providers';
 import Header from '@/components/Header';
+import { Separator } from '@/components/ui/separator';
+import { Toaster } from 'sonner';
 
 export default function RootLayout({
   children,
@@ -8,9 +13,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>
-        <Header />
-        <main className="px-6 py-4">{children}</main>
+      <body className="bg-background">
+        <Providers>
+          <Toaster position="top-right" richColors />
+
+          <Header />
+
+          <div className="h-6" />
+          <Separator />
+
+          {/* ❌ 여기서 잔디 제거 */}
+          <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
+        </Providers>
       </body>
     </html>
   );
