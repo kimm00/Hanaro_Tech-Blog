@@ -22,6 +22,11 @@ export default function CommentItem({
   const [content, setContent] = useState(comment.content);
   const [isReplying, setIsReplying] = useState(false);
 
+  const createdAt = new Date(comment.created_at).toLocaleDateString('ko-KR');
+  const updatedAt =
+    comment.updated_at &&
+    new Date(comment.updated_at).toLocaleDateString('ko-KR');
+
   // 삭제된 댓글
   if (comment.is_deleted) {
     return <p className="text-gray-400 italic">삭제된 댓글입니다.</p>;
@@ -30,6 +35,10 @@ export default function CommentItem({
   return (
     <div className="space-y-2">
       <b>{comment.User.name}</b>
+      <p className="text-xs text-gray-400">
+        {createdAt}
+        {updatedAt && ` · 수정됨 (${updatedAt})`}
+      </p>
 
       {/* ================= 수정 ================= */}
       {isEditing ? (
