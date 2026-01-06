@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
-
-import SignForm from '@/components/auth/SignForm';
 import Link from 'next/link';
-import { GoogleLoginButton } from './GoogleLoginButton';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
+import SignForm from '@/components/auth/SignForm';
 import { GithubLoginButton } from './GithubLoginButton';
+import { GoogleLoginButton } from './GoogleLoginButton';
 
 export default function LoginClient() {
   const searchParams = useSearchParams();

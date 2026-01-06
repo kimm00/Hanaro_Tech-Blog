@@ -1,9 +1,9 @@
-import { prisma } from '@/lib/server/prisma';
-import { auth } from '@/lib/server/auth';
 import Link from 'next/link';
-import NewPostButton from './NewPostButton';
-import LikeButton from './LikeButton';
 import { normalizeQuery } from '@/lib/search/normalizeQuery';
+import { auth } from '@/lib/server/auth';
+import { prisma } from '@/lib/server/prisma';
+import LikeButton from './LikeButton';
+import NewPostButton from './NewPostButton';
 
 type Props = {
   category: string;

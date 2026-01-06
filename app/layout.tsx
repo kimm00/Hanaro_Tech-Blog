@@ -1,10 +1,10 @@
 // app/layout.tsx (Server Component 유지)
 import './globals.css'; // ✅ Tailwind 필수
 
-import Providers from './providers';
+import { Toaster } from 'sonner';
 import Header from '@/components/Header';
 import { Separator } from '@/components/ui/separator';
-import { Toaster } from 'sonner';
+import Providers from './providers';
 
 export default function RootLayout({
   children,

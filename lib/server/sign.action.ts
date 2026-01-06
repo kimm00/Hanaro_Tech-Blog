@@ -2,19 +2,19 @@
 
 import { AuthError } from 'next-auth';
 import z from 'zod';
-import { auth, signIn, signOut } from './auth';
 import { isErrorWithMessage } from '../errors';
+import { auth, signIn, signOut } from './auth';
 import { prisma } from './prisma';
 import {
   comparePassword,
+  emailSchema,
   encryptPassword,
+  nameSchema,
+  passwordSchema,
   saveProfile,
+  type ValidError,
   validate,
   validateAsync,
-  type ValidError,
-  emailSchema,
-  passwordSchema,
-  nameSchema,
 } from './validator';
 
 export type Provider = 'google' | 'github' | 'credentials';

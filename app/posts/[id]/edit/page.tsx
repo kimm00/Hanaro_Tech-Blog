@@ -1,8 +1,8 @@
-import { prisma } from '@/lib/server/prisma';
-import { auth } from '@/lib/server/auth';
+import type { Route } from 'next';
 import { redirect } from 'next/navigation';
 import PostEditor from '@/components/PostEditor';
-import { Route } from 'next';
+import { auth } from '@/lib/server/auth';
+import { prisma } from '@/lib/server/prisma';
 
 type Props = {
   params: Promise<{ id: string }>;

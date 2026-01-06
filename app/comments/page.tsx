@@ -1,4 +1,4 @@
-import { getAllComments, adminDeleteCommentAction } from './comment.action';
+import { adminDeleteCommentAction, getAllComments } from './comment.action';
 
 export default async function AdminCommentsPage() {
   const comments = await getAllComments();

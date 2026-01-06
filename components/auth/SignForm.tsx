@@ -5,12 +5,12 @@
 import type { Route } from 'next';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useActionState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { loginEmail } from '@/lib/server/sign.action';
 import type { ValidError } from '@/lib/server/validator';
-import { toast } from 'sonner';
 
 const initialState: ValidError = {
   error: {},

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createPost, updatePost, deletePost } from '@/app/posts/post.action';
+import { useState } from 'react';
+import { createPost, deletePost, updatePost } from '@/app/posts/post.action';
 import { CATEGORIES } from '@/lib/categories';
 
 type Props = {

@@ -1,7 +1,8 @@
 // lib/server/prisma.ts
 // Next 전용 (App Router)
-import { PrismaClient } from '@/app/generated/prisma/client';
+
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import { PrismaClient } from '@/app/generated/prisma/client';
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

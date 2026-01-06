@@ -1,9 +1,9 @@
 'use client';
 
+import clsx from 'clsx';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/categories';
-import clsx from 'clsx';
-import { Route } from 'next';
 
 type Props = {
   current: string;

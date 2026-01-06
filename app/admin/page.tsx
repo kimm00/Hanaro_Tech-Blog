@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/server/prisma';
-import { auth } from '@/lib/server/auth';
 import { redirect } from 'next/navigation';
+import { auth } from '@/lib/server/auth';
+import { prisma } from '@/lib/server/prisma';
 
 export default async function AdminPage({
   searchParams,

@@ -2,14 +2,12 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
-
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
 import { regist } from '@/lib/server/sign.action';
-import { ValidError } from '@/lib/server/validator';
-import { toast } from 'sonner';
+import type { ValidError } from '@/lib/server/validator';
 
 const initialState: ValidError = {
   error: {},

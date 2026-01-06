@@ -1,6 +1,7 @@
 // app/admin/layout.tsx
-import { auth } from '@/lib/server/auth';
+
 import { redirect } from 'next/navigation';
+import { auth } from '@/lib/server/auth';
 
 export default async function AdminLayout({
   children,

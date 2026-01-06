@@ -1,7 +1,7 @@
 'use client';
 
-import { Route } from 'next';
-import { useSearchParams, useRouter, useParams } from 'next/navigation';
+import type { Route } from 'next';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 

@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import { updateComment, deleteComment } from '@/app/comments/comment.action';
+import { deleteComment, updateComment } from '@/app/comments/comment.action';
 import CommentForm from './CommentForm';
 
 export default function CommentItem({

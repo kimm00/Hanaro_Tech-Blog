@@ -1,4 +1,4 @@
-import { getStopWords, addStopWord, deleteStopWord } from './action';
+import { addStopWord, deleteStopWord, getStopWords } from './action';
 
 export default async function StopWordsPage() {
   const stopwords = await getStopWords();

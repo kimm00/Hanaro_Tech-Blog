@@ -1,8 +1,8 @@
 'use server';
 
-import { prisma } from '@/lib/server/prisma';
-import { auth } from '@/lib/server/auth';
 import { revalidatePath } from 'next/cache';
+import { auth } from '@/lib/server/auth';
+import { prisma } from '@/lib/server/prisma';
 
 /* =========================
    CREATE

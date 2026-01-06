@@ -32,5 +32,13 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "prisma/seed.ts", "prisma/seed-client.ts"]
+  "exclude": [
+    "node_modules",
+    "prisma/seed.ts",
+    "prisma/seed-client.ts",
+    ".next",
+    "storybook-static",
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
+  ]
 }

@@ -1,8 +1,8 @@
-import { prisma } from '@/lib/server/prisma';
-import { auth } from '@/lib/server/auth';
 import Link from 'next/link';
 import CommentForm from '@/components/comment/CommentForm';
 import CommentList from '@/components/comment/CommentList';
+import { auth } from '@/lib/server/auth';
+import { prisma } from '@/lib/server/prisma';
 
 type Props = {
   params: Promise<{ id: string }>;

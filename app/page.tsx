@@ -1,13 +1,12 @@
 // app/page.tsx (Server Component)
 
-import { prisma } from '@/lib/server/prisma';
-import { auth } from '@/lib/server/auth';
-import { buildActivityMap, buildYearHeatmapData } from '@/lib/server/heatmap';
-
 import ActivityHeatmap from '@/components/ActivityHeatmap';
 import CategoryList from '@/components/CategoryList';
 import PostList from '@/components/PostList';
 import PostSearch from '@/components/PostSearch';
+import { auth } from '@/lib/server/auth';
+import { buildActivityMap, buildYearHeatmapData } from '@/lib/server/heatmap';
+import { prisma } from '@/lib/server/prisma';
 
 type HeatmapData = {
   date: string; // ✅ UI용은 string
