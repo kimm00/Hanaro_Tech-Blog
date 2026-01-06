@@ -1,7 +1,6 @@
 'use client';
 
 import { useSession, signOut } from 'next-auth/react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import {
@@ -18,7 +17,7 @@ export default function Header() {
 
   return (
     <header className="flex h-14 items-center justify-between border-b px-6">
-      {/* ✅ 홈: Link로 */}
+      {/* 홈 */}
       <Link href="/" className="font-medium">
         홈
       </Link>
@@ -26,14 +25,9 @@ export default function Header() {
       {session?.user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2">
-              <Image
-                src={session.user.image || '/avatar.png'}
-                alt="profile"
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
+            <button className="flex items-center gap-1 font-medium">
+              {/* ✅ 이름만 표시 */}
+              <span>{session.user.name ?? 'User'}</span>
               <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M5.25 7.5L10 12.25L14.75 7.5" />
               </svg>
@@ -41,16 +35,17 @@ export default function Header() {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end">
-            {/* ✅ 관리자 메뉴 */}
+            {/* 관리자 메뉴 */}
             {session.user.isadmin && (
               <DropdownMenuItem asChild>
                 <Link href="/admin">관리자 페이지</Link>
               </DropdownMenuItem>
             )}
 
+            {/* 이메일 표시 */}
             <DropdownMenuItem disabled>{session.user.email}</DropdownMenuItem>
 
-            {/* ✅ 로그아웃 후 /login */}
+            {/* 로그아웃 */}
             <DropdownMenuItem
               className="text-red-600"
               onClick={() => signOut({ callbackUrl: '/login' })}
@@ -60,7 +55,6 @@ export default function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        // ✅ 로그인도 Link로
         <Link href="/login">로그인</Link>
       )}
     </header>

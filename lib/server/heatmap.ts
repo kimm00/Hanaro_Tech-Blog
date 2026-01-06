@@ -17,11 +17,22 @@ export function buildActivityMap(
 ) {
   const map: Record<string, number> = {};
 
-  for (const post of posts) {
-    const date = post.updated_at ?? post.created_at;
+  const add = (date: Date) => {
     const key = dateKey(date);
-
     map[key] = (map[key] ?? 0) + 1;
+  };
+
+  for (const post of posts) {
+    // ✅ 1. 작성은 무조건 1회
+    add(post.created_at);
+
+    // ✅ 2. 수정이 실제로 일어난 경우만 +1
+    if (
+      post.updated_at &&
+      post.updated_at.getTime() !== post.created_at.getTime()
+    ) {
+      add(post.updated_at);
+    }
   }
 
   return map;
@@ -43,7 +54,7 @@ export function buildYearHeatmapData(
     const key = dateKey(d);
     data.push({
       date: new Date(d),
-      count: Math.min(activityMap[key] ?? 0, 4),
+      count: activityMap[key] ?? 0,
     });
   }
 
