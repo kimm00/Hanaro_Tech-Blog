@@ -4,7 +4,9 @@ import { redirect } from 'next/navigation';
 
 export default async function NewPostPage() {
   const session = await auth();
-  if (!session?.user?.isadmin) redirect('/');
+  if (!session) {
+    redirect('/sign'); // 또는 '/'
+  }
 
   return <PostEditor mode="create" />;
 }

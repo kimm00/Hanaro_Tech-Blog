@@ -1,14 +1,15 @@
-// 회원가입
-
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useActionState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useActionState, useEffect } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+
 import { regist } from '@/lib/server/sign.action';
 import { ValidError } from '@/lib/server/validator';
+import { toast } from 'sonner';
 
 const initialState: ValidError = {
   error: {},
@@ -29,6 +30,16 @@ export default function RegistForm() {
     regist,
     initialState,
   );
+
+  const router = useRouter();
+
+  // ✅ 회원가입 성공 시 이동
+  useEffect(() => {
+    if (validError?.data?.success) {
+      toast.success('회원가입이 완료되었습니다 🎉');
+      router.push('/login');
+    }
+  }, [validError]);
 
   return (
     <div className="grid place-items-center">

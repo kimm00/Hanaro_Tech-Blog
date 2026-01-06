@@ -1,11 +1,33 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
+
 import SignForm from '@/components/auth/SignForm';
 import Link from 'next/link';
 import { GoogleLoginButton } from './GoogleLoginButton';
 import { GithubLoginButton } from './GithubLoginButton';
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // ✅ 로그인 성공 처리 (OAuth / 이메일 공통)
+  useEffect(() => {
+    if (searchParams.get('oauth') === 'success') {
+      toast.success('로그인 성공 🎉');
+      router.replace('/');
+      router.refresh();
+    }
+
+    if (searchParams.get('login') === 'success') {
+      toast.success('로그인 성공 🎉');
+      router.replace('/');
+      router.refresh();
+    }
+  }, [searchParams, router]);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-sm rounded-lg border bg-white p-6 shadow-sm">

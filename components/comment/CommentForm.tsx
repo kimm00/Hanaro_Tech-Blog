@@ -10,8 +10,12 @@ export default function CommentForm({
   postId: number;
   parentId: number | null;
 }) {
-  const action = createComment.bind(null, postId, parentId);
-  const [state, formAction] = useActionState(action, null);
+  const [state, formAction] = useActionState(
+    async (_prev: any, formData: FormData) => {
+      return createComment(postId, parentId, formData);
+    },
+    null,
+  );
 
   return (
     <form action={formAction} className="mt-2 flex gap-2">
@@ -20,11 +24,11 @@ export default function CommentForm({
         placeholder={parentId ? '답글 달기...' : '댓글을 입력하세요'}
         className="flex-1 border px-2 py-1"
       />
-      <button type="submit" className="rounded bg-black px-3 py-1 text-white">
+      <button type="submit" className="bg-black px-3 py-1 text-white">
         등록
       </button>
 
-      {state?.error && <p className="text-red-500 text-sm">{state.error}</p>}
+      {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
     </form>
   );
 }

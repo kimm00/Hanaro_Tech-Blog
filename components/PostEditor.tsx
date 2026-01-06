@@ -18,7 +18,7 @@ type Props = {
 
 export default function PostEditor({ mode, post }: Props) {
   const router = useRouter();
-  const action = mode === 'edit' ? updatePost.bind(null, post!.id) : createPost;
+  const action = mode === 'edit' ? updatePost.bind(null, post!.id) : createPost; // create는 그냥 redirect
 
   const [state, formAction] = useActionState(action, null);
   const [open, setOpen] = useState(false);

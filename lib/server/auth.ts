@@ -107,8 +107,8 @@ export const {
     },
   },
   pages: {
-    signIn: '/sign',
-    error: '/sign/error',
+    signIn: '/login',
+    error: '/login',
   },
   session: {
     strategy: 'jwt',

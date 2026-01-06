@@ -9,10 +9,9 @@ import {
 import { HeatmapItem } from '@/lib/server/heatmap';
 
 type Props = {
-  data: HeatmapItem[];
+  data?: HeatmapItem[]; // ✅ optional
 };
 
-// 월 라벨
 const months = [
   '1월',
   '2월',
@@ -30,24 +29,44 @@ const months = [
 
 export default function ActivityHeatmap({ data = [] }: Props) {
   /** 총 활동 수 */
-  const totalCount = data.reduce((sum, item) => sum + item.count, 0);
+  const totalCount = data.reduce((sum, d) => sum + d.count, 0);
 
-  /** 색상 강도 */
+  /** 색상 단계 */
   const getIntensityColor = (count: number) => {
     if (count === 0) return 'bg-muted';
     if (count === 1) return 'bg-emerald-300';
     if (count === 2) return 'bg-emerald-400';
     if (count === 3) return 'bg-emerald-500';
-    return 'bg-emerald-600'; // 4회 이상
+    return 'bg-emerald-600';
   };
 
-  /** GitHub처럼 시작 요일 맞추기 (Sun=0 → Mon 기준) */
-  const firstDay = data[0]?.date.getDay() ?? 0; // 0=Sun
+  /** 데이터 없을 때도 1년 분량 뼈대 유지 */
+  const safeData =
+    data.length > 0
+      ? data
+      : Array.from({ length: 365 }, (_, i) => ({
+          date: new Date(new Date().setDate(new Date().getDate() - (364 - i))),
+          count: 0,
+        }));
+
+  /** GitHub처럼 요일 정렬 (Mon 시작) */
+  const firstDay = safeData[0].date.getDay(); // 0=Sun
+
+  if (data.length === 0) {
+    return (
+      <div className="rounded-xl border bg-card p-6 shadow-sm">
+        <h3 className="font-semibold text-lg">활동 기록</h3>
+        <p className="text-muted-foreground text-sm">
+          로그인 후 활동 기록이 표시됩니다.
+        </p>
+      </div>
+    );
+  }
   const padCount = firstDay === 0 ? 6 : firstDay - 1;
 
   const paddedData: (HeatmapItem | null)[] = [
     ...Array(padCount).fill(null),
-    ...data,
+    ...safeData,
   ];
 
   return (
@@ -65,10 +84,10 @@ export default function ActivityHeatmap({ data = [] }: Props) {
         <div className="flex items-center gap-2 text-muted-foreground text-xs">
           <span>적음</span>
           <div className="flex gap-1">
-            {[0, 1, 2, 3, 4].map((level) => (
+            {[0, 1, 2, 3, 4].map((l) => (
               <div
-                key={level}
-                className={`h-3 w-3 rounded-sm ${getIntensityColor(level)}`}
+                key={l}
+                className={`h-3 w-3 rounded-sm ${getIntensityColor(l)}`}
               />
             ))}
           </div>
@@ -77,7 +96,7 @@ export default function ActivityHeatmap({ data = [] }: Props) {
       </div>
 
       {/* ===== 월 라벨 ===== */}
-      <div className="mb-2 ml-10 grid grid-cols-12 text-xs text-muted-foreground">
+      <div className="mb-2 ml-10 grid grid-cols-12 text-muted-foreground text-xs">
         {months.map((m) => (
           <div key={m}>{m}</div>
         ))}
@@ -86,8 +105,8 @@ export default function ActivityHeatmap({ data = [] }: Props) {
       {/* ===== 요일 + 잔디 ===== */}
       <TooltipProvider delayDuration={0}>
         <div className="flex">
-          {/* 요일 라벨 */}
-          <div className="mr-2 flex flex-col justify-between py-1 text-xs text-muted-foreground">
+          {/* 요일 */}
+          <div className="mr-2 flex flex-col justify-between py-1 text-muted-foreground text-xs">
             <span>Mon</span>
             <span>Tue</span>
             <span>Wed</span>
@@ -102,9 +121,9 @@ export default function ActivityHeatmap({ data = [] }: Props) {
             <div
               className="inline-grid gap-1"
               style={{
-                gridTemplateColumns: 'repeat(53, 1fr)', // 주 단위
-                gridTemplateRows: 'repeat(7, 1fr)', // 요일
-                gridAutoFlow: 'column', // ⭐ 핵심
+                gridTemplateColumns: 'repeat(53, 1fr)',
+                gridTemplateRows: 'repeat(7, 1fr)',
+                gridAutoFlow: 'column',
               }}
             >
               {paddedData.map((item, i) =>
@@ -112,9 +131,7 @@ export default function ActivityHeatmap({ data = [] }: Props) {
                   <Tooltip key={i}>
                     <TooltipTrigger asChild>
                       <div
-                        className={`h-3 w-3 cursor-pointer rounded-sm transition-all
-                          hover:ring-2 hover:ring-primary hover:ring-offset-1
-                          ${getIntensityColor(item.count)}`}
+                        className={`h-3 w-3 rounded-sm transition hover:ring-2 hover:ring-primary hover:ring-offset-1 ${getIntensityColor(item.count)}`}
                       />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -127,7 +144,6 @@ export default function ActivityHeatmap({ data = [] }: Props) {
                     </TooltipContent>
                   </Tooltip>
                 ) : (
-                  // 시작 요일 패딩
                   <div key={i} className="h-3 w-3" />
                 ),
               )}

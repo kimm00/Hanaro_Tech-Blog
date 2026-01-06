@@ -11,14 +11,33 @@ export default async function EditPage({ params }: Props) {
   const { id } = await params;
 
   const session = await auth();
-  if (!session?.user?.isadmin) redirect('/');
+  if (!session) redirect('/sign');
 
   const post = await prisma.post.findUnique({
     where: { id: Number(id) },
-    include: { Category: true },
+    select: {
+      id: true,
+      writer: true, // ⭐ 이거 중요
+      title: true,
+      contents: true,
+      Category: { select: { title: true } },
+    },
   });
 
   if (!post) redirect('/posts');
+
+  const isOwner = post.writer === Number(session.user.id);
+  const isAdmin = session.user.isadmin === true;
+
+  console.log('EDIT DEBUG', {
+    postWriter: post.writer,
+    sessionUserId: session.user.id,
+    sessionUserIdType: typeof session.user.id,
+  });
+
+  if (!isOwner && !isAdmin) {
+    redirect('/posts');
+  }
 
   return (
     <PostEditor

@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { loginEmail } from '@/lib/server/sign.action';
 import type { ValidError } from '@/lib/server/validator';
+import { toast } from 'sonner';
 
 const initialState: ValidError = {
   error: {},
@@ -31,7 +32,12 @@ export default function SignForm() {
       }
 
       // ✅ 로그인 성공
-      router.push(redirectTo as Route);
+      toast.success('로그인 성공 👋');
+
+      // UX 좋게 살짝 딜레이
+      setTimeout(() => {
+        router.push(redirectTo as Route);
+      }, 600);
 
       // ⚠️ 반드시 state 반환
       return initialState;

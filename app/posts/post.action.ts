@@ -5,7 +5,9 @@ import { auth } from '@/lib/server/auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-// ✅ CREATE
+/* =========================
+   CREATE
+========================= */
 export async function createPost(_prev: any, formData: FormData) {
   const session = await auth();
   if (!session?.user) return { error: '로그인 필요' };
@@ -35,39 +37,44 @@ export async function createPost(_prev: any, formData: FormData) {
   redirect('/');
 }
 
-// ✅ UPDATE (useActionState용 시그니처)
+/* =========================
+   UPDATE (useActionState)
+========================= */
 export async function updatePost(
   postId: number,
   _prev: any,
   formData: FormData,
 ) {
   const session = await auth();
-  if (!session?.user?.isadmin) return { error: '권한 없음' };
+  if (!session) return { success: false };
 
-  const title = formData.get('title')?.toString();
-  const contents = formData.get('contents')?.toString();
-  const category = formData.get('category')?.toString();
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: { writer: true },
+  });
+
+  const isOwner = post?.writer === Number(session.user.id);
+  const isAdmin = session.user.isadmin === true;
+
+  if (!isOwner && !isAdmin) {
+    return { success: false };
+  }
 
   await prisma.post.update({
     where: { id: postId },
     data: {
-      title,
-      contents,
-      updated_at: new Date(), // ⭐⭐⭐ 이게 핵심
-      Category: {
-        connectOrCreate: {
-          where: { title: category ?? '기타' },
-          create: { title: category ?? '기타' },
-        },
-      },
+      title: formData.get('title') as string,
+      contents: formData.get('contents') as string,
     },
   });
 
-  revalidatePath('/');
+  revalidatePath(`/posts/${postId}`);
   return { success: true };
 }
 
-// ✅ DELETE (직접 호출용)
+/* =========================
+   DELETE
+========================= */
 export async function deletePost(postId: number) {
   const session = await auth();
   if (!session?.user?.isadmin) return { error: '권한 없음' };
