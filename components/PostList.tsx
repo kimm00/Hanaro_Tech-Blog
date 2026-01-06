@@ -6,14 +6,26 @@ import LikeButton from './LikeButton';
 
 type Props = {
   category: string;
+  query?: string; // ✅ 추가
 };
 
-export default async function PostList({ category }: Props) {
+export default async function PostList({ category, query }: Props) {
   const session = await auth();
   const userId = session?.user ? Number(session.user.id) : null;
 
   const posts = await prisma.post.findMany({
-    where: category === '전체보기' ? {} : { Category: { title: category } },
+    where: {
+      // 📂 카테고리 필터
+      ...(category !== '전체보기' && {
+        Category: { title: category },
+      }),
+
+      // 🔍 검색 필터 (제목 + 내용)
+      ...(query && {
+        OR: [{ title: { contains: query } }, { contents: { contains: query } }],
+      }),
+    },
+
     orderBy: { id: 'desc' },
 
     select: {
@@ -50,9 +62,17 @@ export default async function PostList({ category }: Props) {
   return (
     <div className="space-y-10">
       <div className="flex items-center justify-between">
-        <h1 className="font-bold text-2xl">{category}</h1>
+        <h1 className="font-bold text-2xl">
+          {query ? `"${query}" 검색 결과` : category}
+        </h1>
         {session && <NewPostButton />}
       </div>
+
+      {mappedPosts.length === 0 && (
+        <p className="text-center text-muted-foreground">
+          검색 결과가 없습니다.
+        </p>
+      )}
 
       {mappedPosts.map((post) => (
         <article

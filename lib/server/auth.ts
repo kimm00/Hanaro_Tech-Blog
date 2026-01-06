@@ -24,11 +24,27 @@ export const {
         },
       },
       async authorize(credentials) {
-        console.log('🚀 ~ credentials:', credentials);
         const { email, passwd } = credentials;
+
+        if (!email || !passwd) return null;
+
+        const user = await prisma.user.findUnique({
+          where: { email },
+        });
+
+        if (!user) throw makeAuthError('EmailSignInError', 'Not Exists Email');
+
+        if (!user.passwd || !(await comparePassword(passwd, user.passwd))) {
+          throw makeAuthError('EmailSignInError', 'Invalid Email or Password');
+        }
+
+        // ✅ 반드시 id 포함해서 반환
         return {
-          email: email as string,
-          passwd: passwd as string,
+          id: String(user.id),
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          isadmin: user.isadmin,
         };
       },
     }),

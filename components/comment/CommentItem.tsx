@@ -14,7 +14,7 @@ export default function CommentItem({
 }) {
   const { data: session } = useSession();
 
-  const isOwner = comment.user_id === Number(session?.user?.id);
+  const isOwner = String(comment.writer) === session?.user?.id;
   const isAdmin = session?.user?.isadmin === true;
   const canEdit = isOwner || isAdmin;
 
@@ -24,7 +24,7 @@ export default function CommentItem({
 
   // 삭제된 댓글
   if (comment.is_deleted) {
-    return <p className="italic text-gray-400">삭제된 댓글입니다.</p>;
+    return <p className="text-gray-400 italic">삭제된 댓글입니다.</p>;
   }
 
   return (

@@ -62,9 +62,12 @@ export async function updateComment(
   });
   if (!comment) throw new Error('댓글 없음');
 
-  const isOwner = comment.user_id === Number(session.user.id);
+  const isOwner = comment.writer === Number(session.user.id);
   const isAdmin = session.user.isadmin === true;
-  if (!isOwner && !isAdmin) throw new Error('권한 없음');
+
+  if (!isOwner && !isAdmin) {
+    throw new Error('권한 없음');
+  }
 
   await prisma.comment.update({
     where: { id: commentId },

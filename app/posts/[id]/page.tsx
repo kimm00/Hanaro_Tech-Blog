@@ -33,16 +33,40 @@ export default async function PostDetailPage({ params }: Props) {
       post_id: postId,
       parent_id: null,
     },
-    include: {
-      User: true,
+    select: {
+      id: true,
+      content: true,
+      writer: true, // 🔥 이거 필수
+      parent_id: true,
+      is_deleted: true,
+      created_at: true,
+      updated_at: true,
+      User: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          isadmin: true,
+        },
+      },
       Replies: {
-        include: {
-          User: true,
-          Replies: {
-            include: { User: true },
+        select: {
+          id: true,
+          content: true,
+          writer: true, // 🔥 여기도 필수
+          parent_id: true,
+          is_deleted: true,
+          created_at: true,
+          updated_at: true,
+          User: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              isadmin: true,
+            },
           },
         },
-        orderBy: { created_at: 'asc' },
       },
     },
     orderBy: { created_at: 'asc' },
