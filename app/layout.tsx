@@ -5,6 +5,12 @@ import { Toaster } from 'sonner';
 import Header from '@/components/Header';
 import { Separator } from '@/components/ui/separator';
 import Providers from './providers';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Hanaro Blog',
+  description: '개발 기록과 학습 로그를 정리하는 기술 블로그',
+};
 
 export default function RootLayout({
   children,

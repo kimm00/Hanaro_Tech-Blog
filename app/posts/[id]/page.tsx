@@ -99,6 +99,10 @@ export default async function PostDetailPage({ params }: Props) {
       {/* 댓글 */}
       <h2 className="mb-4 font-bold text-lg">댓글</h2>
 
+      {/* 🔥 댓글 작성 폼 (로그인한 경우만) */}
+      {session?.user && <CommentForm postId={postId} parentId={null} />}
+
+      {/* 댓글 목록 */}
       <CommentList postId={postId} comments={comments} />
     </div>
   );
