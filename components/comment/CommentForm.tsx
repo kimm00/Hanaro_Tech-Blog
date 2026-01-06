@@ -28,7 +28,7 @@ export default function CommentForm({
         등록
       </button>
 
-      {state?.error && <p className="text-sm text-red-500">{state.error}</p>}
+      {state?.error && <p className="text-red-500 text-sm">{state.error}</p>}
     </form>
   );
 }

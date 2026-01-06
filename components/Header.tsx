@@ -25,9 +25,11 @@ export default function Header() {
       {session?.user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
+            {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
             <button className="flex items-center gap-1 font-medium">
               {/* ✅ 이름만 표시 */}
               <span>{session.user.name ?? 'User'}</span>
+              {/** biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
               <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M5.25 7.5L10 12.25L14.75 7.5" />
               </svg>

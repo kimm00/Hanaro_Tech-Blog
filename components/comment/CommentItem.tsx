@@ -35,7 +35,7 @@ export default function CommentItem({
   return (
     <div className="space-y-2">
       <b>{comment.User.name}</b>
-      <p className="text-xs text-gray-400">
+      <p className="text-gray-400 text-xs">
         {createdAt}
         {updatedAt && ` · 수정됨 (${updatedAt})`}
       </p>
@@ -85,9 +85,11 @@ export default function CommentItem({
       {/* ================= 버튼 ================= */}
       {canEdit && !isEditing && (
         <div className="flex gap-2 text-sm">
+          {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
           <button onClick={() => setIsEditing(true)} className="text-blue-500">
             수정
           </button>
+          {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
           <button
             onClick={() => deleteComment(comment.id, postId)}
             className="text-red-500"
@@ -99,9 +101,10 @@ export default function CommentItem({
 
       {/* ================= 답글 버튼 (최상위 댓글만) ================= */}
       {session && comment.parent_id === null && (
+        // biome-ignore lint/a11y/useButtonType: <explanation>
         <button
           onClick={() => setIsReplying(!isReplying)}
-          className="text-sm text-gray-500"
+          className="text-gray-500 text-sm"
         >
           답글
         </button>

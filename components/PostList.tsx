@@ -3,15 +3,19 @@ import { auth } from '@/lib/server/auth';
 import Link from 'next/link';
 import NewPostButton from './NewPostButton';
 import LikeButton from './LikeButton';
+import { normalizeQuery } from '@/lib/search/normalizeQuery'; // ✅ 추가
 
 type Props = {
   category: string;
-  query?: string; // ✅ 추가
+  query?: string;
 };
 
 export default async function PostList({ category, query }: Props) {
   const session = await auth();
   const userId = session?.user ? Number(session.user.id) : null;
+
+  // 🔍 불용어 제거된 키워드
+  const keywords = await normalizeQuery(query);
 
   const posts = await prisma.post.findMany({
     where: {
@@ -20,9 +24,12 @@ export default async function PostList({ category, query }: Props) {
         Category: { title: category },
       }),
 
-      // 🔍 검색 필터 (제목 + 내용)
-      ...(query && {
-        OR: [{ title: { contains: query } }, { contents: { contains: query } }],
+      // 🔍 검색 필터 (불용어 제거 후)
+      ...(keywords.length > 0 && {
+        OR: keywords.flatMap((word) => [
+          { title: { contains: word } },
+          { contents: { contains: word } },
+        ]),
       }),
     },
 
@@ -67,6 +74,12 @@ export default async function PostList({ category, query }: Props) {
         </h1>
         {session && <NewPostButton />}
       </div>
+
+      {query && keywords.length === 0 && (
+        <p className="text-center text-muted-foreground">
+          의미 없는 검색어는 제외됩니다.
+        </p>
+      )}
 
       {mappedPosts.length === 0 && (
         <p className="text-center text-muted-foreground">
