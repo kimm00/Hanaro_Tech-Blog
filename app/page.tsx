@@ -9,24 +9,24 @@ import CategoryList from '@/components/CategoryList';
 import PostList from '@/components/PostList';
 import PostSearch from '@/components/PostSearch';
 
+type HeatmapData = {
+  date: string; // ✅ UI용은 string
+  count: number;
+};
+
 export default async function HomePage({
   searchParams,
 }: {
   searchParams: Promise<{ category?: string; q?: string }>;
 }) {
   const session = await auth();
-
-  // ✅ 반드시 await
   const { category = '전체보기', q } = await searchParams;
 
-  /** 로그인 안 했으면 잔디 비움 */
-  let heatmapData = [];
+  let heatmapData: HeatmapData[] = [];
 
   if (session?.user) {
     const posts = await prisma.post.findMany({
-      where: {
-        writer: Number(session.user.id),
-      },
+      where: { writer: Number(session.user.id) },
       select: {
         created_at: true,
         updated_at: true,
@@ -35,7 +35,12 @@ export default async function HomePage({
 
     const activityMap = buildActivityMap(posts);
     const year = new Date().getFullYear();
-    heatmapData = buildYearHeatmapData(year, activityMap);
+
+    // 👇 Date → string 변환은 여기서 딱 한 번
+    heatmapData = buildYearHeatmapData(year, activityMap).map((item) => ({
+      date: item.date.toISOString().slice(0, 10),
+      count: item.count,
+    }));
   }
 
   return (

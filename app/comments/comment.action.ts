@@ -93,7 +93,7 @@ export async function deleteComment(commentId: number, postId: number) {
   });
   if (!comment) throw new Error('댓글 없음');
 
-  const isOwner = comment.user_id === Number(session.user.id);
+  const isOwner = comment.writer === Number(session.user.id);
   const isAdmin = session.user.isadmin === true;
   if (!isOwner && !isAdmin) throw new Error('권한 없음');
 
@@ -107,4 +107,31 @@ export async function deleteComment(commentId: number, postId: number) {
 
   revalidatePath(`/posts/${postId}`);
   return { success: true };
+}
+
+/* =========================
+   댓글 전체 조회 (관리자)
+========================= */
+export async function getAllComments() {
+  return prisma.comment.findMany({
+    orderBy: { created_at: 'desc' },
+    include: {
+      User: true,
+      Post: true,
+    },
+  });
+}
+
+/* =========================
+   댓글 삭제 (관리자용 alias)
+========================= */
+export async function adminDeleteCommentAction(formData: FormData) {
+  const commentId = Number(formData.get('commentId'));
+  const postId = Number(formData.get('postId'));
+
+  if (!commentId || !postId) {
+    throw new Error('잘못된 요청');
+  }
+
+  await deleteComment(commentId, postId);
 }

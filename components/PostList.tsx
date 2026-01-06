@@ -3,7 +3,7 @@ import { auth } from '@/lib/server/auth';
 import Link from 'next/link';
 import NewPostButton from './NewPostButton';
 import LikeButton from './LikeButton';
-import { normalizeQuery } from '@/lib/search/normalizeQuery'; // ✅ 추가
+import { normalizeQuery } from '@/lib/search/normalizeQuery';
 
 type Props = {
   category: string;

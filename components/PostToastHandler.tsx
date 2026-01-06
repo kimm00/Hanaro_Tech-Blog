@@ -1,5 +1,6 @@
 'use client';
 
+import { Route } from 'next';
 import { useSearchParams, useRouter, useParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -19,7 +20,7 @@ export default function PostToastHandler() {
 
     if (params.get('updated')) {
       toast.success('✏️ 글 수정 완료!');
-      router.replace('/posts', { scroll: false });
+      router.replace('/posts' as Route, { scroll: false });
     }
   }, [params, router, postId]);
 

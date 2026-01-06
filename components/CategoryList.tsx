@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { CATEGORIES } from '@/lib/categories';
 import clsx from 'clsx';
+import { Route } from 'next';
 
 type Props = {
   current: string;
@@ -15,14 +16,14 @@ export default function CategoryList({ current, horizontal = false }: Props) {
       className={clsx(
         horizontal
           ? // ✅ 가로 스크롤 버전
-            'flex gap-2 overflow-x-auto whitespace-nowrap pb-3 -mx-6 px-6'
+            '-mx-6 flex gap-2 overflow-x-auto whitespace-nowrap px-6 pb-3'
           : // ✅ (혹시 나중에 쓸) 세로 버전
             'border-r pr-4',
       )}
     >
       {/* 전체보기 */}
       <Link
-        href="/"
+        href={'/' as Route}
         className={clsx(baseStyle, current === '전체보기' && activeStyle)}
       >
         전체보기
@@ -34,9 +35,10 @@ export default function CategoryList({ current, horizontal = false }: Props) {
         const href = `/?category=${encodeURIComponent(name)}`;
 
         return (
+          // biome-ignore lint/correctness/useJsxKeyInIterable: <explanation>
           <Link
             key={name}
-            href={href}
+            href={href as Route}
             className={clsx(baseStyle, isActive && activeStyle)}
           >
             {name}

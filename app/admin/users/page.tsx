@@ -13,13 +13,13 @@ export default async function AdminUsersPage({
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-bold">👥 회원 관리</h1>
+      <h1 className="mb-4 font-bold text-xl">👥 회원 관리</h1>
 
       <ul className="space-y-2">
         {users.map((u) => (
           <li key={u.id} className="border p-3">
             <p>{u.email}</p>
-            <p className="text-sm text-gray-500">
+            <p className="text-gray-500 text-sm">
               {u.isadmin ? '관리자' : '일반 사용자'} ·{' '}
               {u.outdt ? '탈퇴' : '활성'}
             </p>

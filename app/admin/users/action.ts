@@ -14,10 +14,7 @@ export async function getUsers(params: {
       AND: [
         q
           ? {
-              OR: [
-                { email: { contains: q, mode: 'insensitive' } },
-                { name: { contains: q, mode: 'insensitive' } },
-              ],
+              OR: [{ email: { contains: q } }, { name: { contains: q } }],
             }
           : {},
         role === 'admin'

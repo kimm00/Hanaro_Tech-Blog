@@ -6,10 +6,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from './ui/tooltip';
-import { HeatmapItem } from '@/lib/server/heatmap';
+
+type HeatmapData = {
+  date: string; // ✅ string 고정
+  count: number;
+};
 
 type Props = {
-  data?: HeatmapItem[]; // ✅ optional
+  data?: HeatmapData[];
 };
 
 const months = [
@@ -40,17 +44,19 @@ export default function ActivityHeatmap({ data = [] }: Props) {
     return 'bg-emerald-600';
   };
 
-  /** 데이터 없을 때도 1년 분량 뼈대 유지 */
-  const safeData =
+  /** 데이터 없을 때도 1년 분량 뼈대 유지 (✅ string으로 생성) */
+  const safeData: HeatmapData[] =
     data.length > 0
       ? data
       : Array.from({ length: 365 }, (_, i) => ({
-          date: new Date(new Date().setDate(new Date().getDate() - (364 - i))),
+          date: new Date(new Date().setDate(new Date().getDate() - (364 - i)))
+            .toISOString()
+            .slice(0, 10),
           count: 0,
         }));
 
   /** GitHub처럼 요일 정렬 (Mon 시작) */
-  const firstDay = safeData[0].date.getDay(); // 0=Sun
+  const firstDay = new Date(safeData[0].date).getDay(); // ✅ Date 변환
 
   if (data.length === 0) {
     return (
@@ -62,9 +68,10 @@ export default function ActivityHeatmap({ data = [] }: Props) {
       </div>
     );
   }
+
   const padCount = firstDay === 0 ? 6 : firstDay - 1;
 
-  const paddedData: (HeatmapItem | null)[] = [
+  const paddedData: (HeatmapData | null)[] = [
     ...Array(padCount).fill(null),
     ...safeData,
   ];
@@ -136,7 +143,7 @@ export default function ActivityHeatmap({ data = [] }: Props) {
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="text-xs">
-                        {item.date.toLocaleDateString('ko-KR')}
+                        {new Date(item.date).toLocaleDateString('ko-KR')}
                       </p>
                       <p className="font-semibold text-xs">
                         {item.count}회 활동

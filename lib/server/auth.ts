@@ -24,7 +24,8 @@ export const {
         },
       },
       async authorize(credentials) {
-        const { email, passwd } = credentials;
+        const email = credentials?.email?.toString();
+        const passwd = credentials?.passwd?.toString();
 
         if (!email || !passwd) return null;
 
@@ -65,18 +66,11 @@ export const {
 
       // ✅ Credentials 로그인
       if (account?.provider === 'credentials') {
-        if (!oldUser)
+        if (!oldUser) {
           throw makeAuthError('EmailSignInError', 'Not Exists Email');
-
-        if (
-          passwd &&
-          oldUser.passwd &&
-          !(await comparePassword(passwd, oldUser.passwd))
-        )
-          throw makeAuthError('EmailSignInError', 'Invalid Email or Password');
+        }
       }
 
-      // ✅ 핵심: 어떤 provider든 User 레코드 보장
       if (!oldUser) {
         oldUser = await prisma.user.create({
           data: {

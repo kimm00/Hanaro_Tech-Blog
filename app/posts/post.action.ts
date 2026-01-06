@@ -3,20 +3,23 @@
 import { prisma } from '@/lib/server/prisma';
 import { auth } from '@/lib/server/auth';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 /* =========================
    CREATE
 ========================= */
-export async function createPost(_prev: any, formData: FormData) {
+export async function createPost(formData: FormData) {
   const session = await auth();
-  if (!session?.user) return { error: '로그인 필요' };
+  if (!session?.user) {
+    throw new Error('로그인이 필요합니다.');
+  }
 
   const title = formData.get('title')?.toString();
   const contents = formData.get('contents')?.toString();
   const categoryTitle = formData.get('category')?.toString() ?? '기타';
 
-  if (!title) return { error: '제목 필요' };
+  if (!title) {
+    throw new Error('제목이 필요합니다.');
+  }
 
   const cat = await prisma.category.upsert({
     where: { title: categoryTitle },
@@ -34,30 +37,31 @@ export async function createPost(_prev: any, formData: FormData) {
   });
 
   revalidatePath('/');
-  redirect('/');
 }
 
 /* =========================
-   UPDATE (useActionState)
+   UPDATE
 ========================= */
-export async function updatePost(
-  postId: number,
-  _prev: any,
-  formData: FormData,
-) {
+export async function updatePost(postId: number, formData: FormData) {
   const session = await auth();
-  if (!session) return { success: false };
+  if (!session?.user) {
+    throw new Error('로그인이 필요합니다.');
+  }
 
   const post = await prisma.post.findUnique({
     where: { id: postId },
     select: { writer: true },
   });
 
-  const isOwner = post?.writer === Number(session.user.id);
+  if (!post) {
+    throw new Error('게시글이 존재하지 않습니다.');
+  }
+
+  const isOwner = post.writer === Number(session.user.id);
   const isAdmin = session.user.isadmin === true;
 
   if (!isOwner && !isAdmin) {
-    return { success: false };
+    throw new Error('권한이 없습니다.');
   }
 
   await prisma.post.update({
@@ -69,7 +73,6 @@ export async function updatePost(
   });
 
   revalidatePath(`/posts/${postId}`);
-  return { success: true };
 }
 
 /* =========================
@@ -77,9 +80,29 @@ export async function updatePost(
 ========================= */
 export async function deletePost(postId: number) {
   const session = await auth();
-  if (!session?.user?.isadmin) return { error: '권한 없음' };
+  if (!session?.user) {
+    throw new Error('로그인이 필요합니다.');
+  }
 
-  await prisma.post.delete({ where: { id: postId } });
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: { writer: true },
+  });
+
+  if (!post) {
+    throw new Error('게시글이 존재하지 않습니다.');
+  }
+
+  const isOwner = post.writer === Number(session.user.id);
+  const isAdmin = session.user.isadmin === true;
+
+  if (!isOwner && !isAdmin) {
+    throw new Error('권한이 없습니다.');
+  }
+
+  await prisma.post.delete({
+    where: { id: postId },
+  });
+
   revalidatePath('/');
-  return { success: true };
 }

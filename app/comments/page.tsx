@@ -1,4 +1,4 @@
-import { getAllComments, adminDeleteComment } from './action';
+import { getAllComments, adminDeleteCommentAction } from './comment.action';
 
 export default async function AdminCommentsPage() {
   const comments = await getAllComments();
@@ -23,7 +23,9 @@ export default async function AdminCommentsPage() {
             </p>
 
             {!c.is_deleted && (
-              <form action={adminDeleteComment.bind(null, c.id)}>
+              <form action={adminDeleteCommentAction}>
+                <input type="hidden" name="commentId" value={c.id} />
+                <input type="hidden" name="postId" value={c.post_id} />
                 {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
                 <button className="text-red-500 text-sm">관리자 삭제</button>
               </form>

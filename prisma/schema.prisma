@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Category {
-  id    Int    @id @default(autoincrement()) @db.UnsignedTinyInt
+  id    Int    @id @default(autoincrement()) @db.UnsignedInt
   title String @unique @db.VarChar(31)
   Post  Post[]
 }
@@ -39,7 +39,7 @@ model Comment {
 
 model Post {
   id         Int        @id @default(autoincrement()) @db.UnsignedInt
-  category   Int        @db.UnsignedTinyInt
+  category   Int        @db.UnsignedInt
   title      String     @db.VarChar(255)
   writer     Int        @db.UnsignedInt
   contents   String?    @db.Text
